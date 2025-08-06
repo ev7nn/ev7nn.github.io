@@ -82,7 +82,7 @@
 <body>
 
 
-
+<!-- HEADER -->
     <div class="topnav" style="text-align: center">
         <!-- LOGO HOME -->
         <a href="https://www.aevn.digital">
@@ -114,8 +114,19 @@
         <p style="color: #000000"> by clicking below you consent to give me all your data<br>
             there are no refunds and you will also:<br><br>i will personally rob you<br>you might die<br>you will die<br>yeah<br><br>
 
-            <button id="consent-button">CLICK ME</button>
+            <button id="consent-button" onclick="myFunction()">CLICK ME</button>
     </div>
+
+<!-- MAIN --><!-- MAIN --><!-- MAIN --><!-- MAIN --><!-- MAIN --><!-- MAIN --><!-- MAIN --><!-- MAIN --><!-- MAIN -->
+
+
+
+
+
+
+
+
+
 
     <div class="holder">
         <p>hello my name is evan<br>
@@ -123,45 +134,57 @@
             i love seahorses<br>
             okay</p>
         <p style="color: #00FFbb;">-aevndigital </p>
-
-
-        <audio controls preload="auto" autoplay muted>
-            <source src="website song.mp3" type="audio/mpeg">
-        </audio>
     </div>
 
 
 
 
-    <div class="footer">
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- FOOTER --><!-- FOOTER --><!-- FOOTER --><!-- FOOTER --><!-- FOOTER --><!-- FOOTER --><!-- FOOTER --><!-- FOOTER -->
+    <div class="footer">
+        <audio id="mainsong" controls preload="auto" autoplay muted>
+            <source src="website song.mp3" type="audio/mpeg">
+        </audio>
         <p style="color:#BBBBBB">official aevndigital copyrighted!!! do not fucking copy!!!!!!!!!!! <br>2025 aevndigital 2 </p>
 
 
     </div>
-    
-    
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      // random title
-      const titles = ['aevndigital: even digitaller', 'aevndigital: the website', 'aevndigital'];
-      document.title = titles[Math.floor(Math.random() * titles.length)];
 
-      const audio = document.getElementById('player');
-      const overlay = document.getElementById('consent-overlay');
-      const button = document.getElementById('consent-button');
+<!-- OTHER -->
+    <script>
+        const titles = ['aevndigital: even digitaller', 'aevndigital: the website', 'aevndigital'];
+        document.title = titles[Math.floor(Math.random() * titles.length)];
+    </script>
 
-      // mute until consent
-      audio.muted = true;
-
-      button.addEventListener('click', () => {
-        overlay.style.display = 'none';
-        audio.muted = false;
-        audio.play().catch(err => console.warn('playback failed:', err));
-      });
-    });
-  </script>
-  
-  
+    <script>
+        function myFunction() {
+            const audio = document.getElementById('mainsong');
+            audio.muted = false;
+            audio.play()
+            var x = document.getElementById("consent-overlay");
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        }
+    </script>
 </body>
 </html>
