@@ -7,7 +7,19 @@
 <script>
     const titles = ['aevndigital: even digitaller', 'aevndigital: the website', 'aevndigital'];
     document.title = titles[Math.floor(Math.random() * titles.length)];
-</script>
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const audio = document.querySelector('audio');
+      if (audio) {
+        // enable muted autoplay to bypass browser restrictions
+        audio.muted = true;
+        audio.play().then(() => {
+          // optionally unmute after a short delay or user interaction
+          setTimeout(() => { audio.muted = false; }, 2000);
+        }).catch(() => console.warn('autoplay still blocked'));
+      }
+    });
+  </script>
 
 
 
@@ -99,7 +111,7 @@
         <p style="color: #00FFbb;">-aevndigital </p>
         
 
-         <audio controls autoplay>
+         <audio controls preload="auto" autoplay muted>
   <source src="website song.mp3" type="audio/mpeg">
 </audio> 
     </div>
@@ -109,7 +121,7 @@
 
     <div class="footer">
         <img src="https://i.imgur.com/ofF5Smd.gif" alt="games icon" style="width: 10%; height: 60px;" />
-        <p style="color:#BBBBBB">official aevndigital copyrighted!!! do not fucking copy!!!!!!!!!!! or else she will kill you!!!! <br>2025 aevndigital </p>
+        <p style="color:#BBBBBB">official aevndigital copyrighted!!! do not fucking copy!!!!!!!!!!! or else she will kill you!!!! <br>2025 aevndigital 2 </p>
 
 
     </div>
