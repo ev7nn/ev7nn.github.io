@@ -1,29 +1,9 @@
 <!DOCTYPE html>
 <html>
-
 <!-- favicon for tab -->
 <link rel="icon" type="image/png" sizes="16x16" href="https://i.imgur.com/YlhsH4B.png">
 <title></title>
-<script>
-    const titles = ['aevndigital: even digitaller', 'aevndigital: the website', 'aevndigital'];
-    document.title = titles[Math.floor(Math.random() * titles.length)];
 
-      const audio = document.querySelector('audio');
-      const overlay = document.getElementById('consent-overlay');
-      const button = document.getElementById('consent-button');
-
-      // ensure audio is muted initially
-      if (audio) audio.muted = true;
-
-      button.addEventListener('click', () => {
-        if (audio) {
-          audio.muted = false;
-          audio.play().catch(() => console.warn('playback failed'));
-        }
-        overlay.style.display = 'none';
-      });
-    });
-  </script>
 
 
 
@@ -132,7 +112,7 @@
     <div id="consent-overlay">
         <img src="https://i.imgur.com/ofF5Smd.gif" alt="games icon" style="width: 20%; height: 30%;margin: 109px;" />
         <p style="color: #000000"> by clicking below you consent to give me all your data<br>
-            there are no refunds and you will also:<br><br>i will personally rob you<br>you might die<br>you will die<br><br>
+            there are no refunds and you will also:<br><br>i will personally rob you<br>you might die<br>you will die<br>yeah<br><br>
 
             <button id="consent-button">CLICK ME</button>
     </div>
@@ -159,8 +139,29 @@
 
 
     </div>
+    
+    
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // random title
+      const titles = ['aevndigital: even digitaller', 'aevndigital: the website', 'aevndigital'];
+      document.title = titles[Math.floor(Math.random() * titles.length)];
 
+      const audio = document.getElementById('player');
+      const overlay = document.getElementById('consent-overlay');
+      const button = document.getElementById('consent-button');
 
+      // mute until consent
+      audio.muted = true;
+
+      button.addEventListener('click', () => {
+        overlay.style.display = 'none';
+        audio.muted = false;
+        audio.play().catch(err => console.warn('playback failed:', err));
+      });
+    });
+  </script>
+  
+  
 </body>
-
 </html>
