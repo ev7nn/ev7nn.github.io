@@ -20,7 +20,6 @@
         padding: 30;
         height: 100%;
     }
-
     .holder {
         background-color: #99CCFF;
         padding-top: 2px;
@@ -33,13 +32,11 @@
         margin-bottom: 20px;
 
     }
-
     p {
         color: #FFFFFF;
         font-size: 30;
         font-family: tim
     }
-
     .topnav {
 
         background-color: #FFFFFF;
@@ -49,7 +46,6 @@
         margin: 2%;
 
     }
-
     .footer {
         position: fixed;
         bottom: 0;
@@ -74,6 +70,18 @@
         align-items: center;
         z-index: 9999;
     }
+    #consent-overlay-evil {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 1);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+    }
 
     #consent-button {
         background: #FF0000;
@@ -82,13 +90,13 @@
         padding: 1em 2em;
         font-size: 1.5em;
         cursor: pointer;
+    }
 
+    .clickable-img {
+        cursor: pointer;
     }
 </style>
-
 <body>
-
-
     <!-- HEADER -->
     <div class="topnav" style="text-align: center">
         <!-- LOGO HOME -->
@@ -113,29 +121,12 @@
             <img src="https://i.imgur.com/8z5x0TN.png" alt="about" width="100" height="50" />
         </a>
     </div>
-
-
-
-    <div id="consent-overlay">
-        <img src="https://i.imgur.com/ofF5Smd.gif" alt="games icon" style="width: 20%; height: 30%;margin: 109px;" />
-        <p style="color: #000000"> by clicking below you consent to give me all your data<br>
-            there are no refunds and you will also:<br><br>i will personally rob you<br>you might die<br>you will die<br>yeah<br><br>
-
-            <button id="consent-button" onclick="introsound()">CLICK ME!</button><br><br>
-            <button id="consent-button2" onclick="mute()">or if you hate audio click here</button>
+    <div id="consent-overlay-evil">
+        <img src="https://i.imgur.com/QJU3q23.png" alt="gateway" class="clickable-img" onclick="introsound()" onmouseover="this.src='https://i.imgur.com/nH2NvtZ.png';" onmouseout="this.src='https://i.imgur.com/QJU3q23.png';">
+        <a id="consent-button2" onclick="mute()" style="position: fixed;bottom:0;margin: 20px;color:rgba(200,40,40,1)" class="clickable-img">or if you hate audio click here</a>
     </div>
 
     <!-- MAIN --><!-- MAIN --><!-- MAIN --><!-- MAIN --><!-- MAIN --><!-- MAIN --><!-- MAIN --><!-- MAIN --><!-- MAIN -->
-
-
-
-
-
-
-
-
-
-
     <div class="holder">
         <p>hello my name is evan<br>
             my favourite colour is blue<br>
@@ -183,7 +174,6 @@
     <audio id="welcome" preload="auto">
         <source src="welcome to aeeeeeee.mp3" type="audio/mpeg">
     </audio>
-
     <script>
         function introsound() {
             const audio = document.getElementById('mainsong');
@@ -191,23 +181,23 @@
             audio.muted = false;
             audio.play()
             audio2.play()
+            var xs = document.getElementById("consent-overlay-evil");
+            xs.style.display = "none";
             var x = document.getElementById("consent-overlay");
-            if (x.style.display === "none") {
-                x.style.display = "block";
-            } else {
-                x.style.display = "none";
-            }
+            x.style.display = "none";
         }
-
+        var muted = 0
         function mute() {
+            muted = 1
             const audio = document.getElementById('mainsong');
             const audio2 = document.getElementById('welcome');
             audio.muted = true;
             audio2.muted = true;
+            var xs = document.getElementById("consent-overlay-evil");
+            xs.style.display = "none";
             var x = document.getElementById("consent-overlay");
             x.style.display = "none";
         }
     </script>
 </body>
-
 </html>
