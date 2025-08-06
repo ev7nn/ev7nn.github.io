@@ -1,4 +1,4 @@
-d<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <!-- favicon for tab -->
 <link rel="icon" type="image/png" sizes="16x16" href="https://i.imgur.com/YlhsH4B.png">
@@ -82,7 +82,7 @@ d<!DOCTYPE html>
 <body>
 
 
-<!-- HEADER -->
+    <!-- HEADER -->
     <div class="topnav" style="text-align: center">
         <!-- LOGO HOME -->
         <a href="https://www.aevn.digital">
@@ -114,10 +114,11 @@ d<!DOCTYPE html>
         <p style="color: #000000"> by clicking below you consent to give me all your data<br>
             there are no refunds and you will also:<br><br>i will personally rob you<br>you might die<br>you will die<br>yeah<br><br>
 
-            <button id="consent-button" onclick="introsound()">CLICK ME</button>
+            <button id="consent-button" onclick="introsound()">CLICK ME!</button><br><br>
+            <button id="consent-button2" onclick="mute()">or if you hate audio click here</button>
     </div>
 
-<!-- MAIN --><!-- MAIN --><!-- MAIN --><!-- MAIN --><!-- MAIN --><!-- MAIN --><!-- MAIN --><!-- MAIN --><!-- MAIN -->
+    <!-- MAIN --><!-- MAIN --><!-- MAIN --><!-- MAIN --><!-- MAIN --><!-- MAIN --><!-- MAIN --><!-- MAIN --><!-- MAIN -->
 
 
 
@@ -157,26 +158,27 @@ d<!DOCTYPE html>
 
 
 
-<!-- FOOTER --><!-- FOOTER --><!-- FOOTER --><!-- FOOTER --><!-- FOOTER --><!-- FOOTER --><!-- FOOTER --><!-- FOOTER -->
+    <!-- FOOTER --><!-- FOOTER --><!-- FOOTER --><!-- FOOTER --><!-- FOOTER --><!-- FOOTER --><!-- FOOTER --><!-- FOOTER -->
     <div class="footer">
 
         <p style="color:#BBBBBB">official aevndigital copyrighted!!! do not fucking copy!!!!!!!!!!! <br>2025 aevndigital 2 </p>
+        <button id="consent-button2" onclick="mute()">mute</button>
+        <br>
     </div>
-<!-- OTHER -->
+    <!-- OTHER -->
     <script>
         const titles = ['aevndigital: even digitaller', 'aevndigital: the website', 'aevndigital'];
         document.title = titles[Math.floor(Math.random() * titles.length)];
     </script>
-                        <audio id="mainsong" preload="auto" autoplay muted>
-            <source src="website song.mp3" type="audio/mpeg">
-        </audio>
-                    <audio id="welcome" preload="auto">
-            <source src="welcome to aeeeeeee.mp3" type="audio/mpeg">
-        </audio>
+    <audio id="mainsong" preload="auto" autoplay muted>
+        <source src="website song.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="welcome" preload="auto">
+        <source src="welcome to aeeeeeee.mp3" type="audio/mpeg">
+    </audio>
 
     <script>
         function introsound() {
-
             const audio = document.getElementById('mainsong');
             const audio2 = document.getElementById('welcome');
             audio.muted = false;
@@ -189,6 +191,16 @@ d<!DOCTYPE html>
                 x.style.display = "none";
             }
         }
+
+        function mute() {
+            const audio = document.getElementById('mainsong');
+            const audio2 = document.getElementById('welcome');
+            audio.muted = true;
+            audio2.muted = true;
+            var x = document.getElementById("consent-overlay");
+            x.style.display = "none";
+        }
     </script>
 </body>
+
 </html>
