@@ -167,15 +167,16 @@
         const titles = ['aevndigital: even digitaller', 'aevndigital: the website', 'aevndigital'];
         document.title = titles[Math.floor(Math.random() * titles.length)];
     </script>
-
-    <script>
-        function introsound() {
-                    <audio id="mainsong" preload="auto" autoplay muted>
+                        <audio id="mainsong" preload="auto" autoplay muted>
             <source src="website song.mp3" type="audio/mpeg">
         </audio>
                     <audio id="welcome" preload="auto">
             <source src="welcome to aeeeeeee.mp3" type="audio/mpeg">
         </audio>
+
+    <script>
+        function introsound() {
+
             const audio = document.getElementById('mainsong');
             const audio2 = document.getElementById('welcome');
             audio.muted = false;
