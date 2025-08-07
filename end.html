@@ -83,13 +83,19 @@
 
 
 
-<img src="https://i.imgur.com/JiaZuog.gif" alt="i can see" class="clickable-img" onclick="eye1()">
-
+<img
+  src="https://i.imgur.com/JiaZuog.gif"
+  alt="i can see"
+  class="clickable-img"
+  onclick="eye1()"
+  height="100"
+  style="display: block; margin: 0 auto;margin-top:50%"
+/>
 <div id="consent-overlay-evil">
 
     </div>
 
-<audio id="speech" preload="auto" muted>
+<audio id="speech" preload="auto">
         <source src="iwannasee.mp3" type="audio/mpeg">
     </audio>
     <script>
@@ -99,7 +105,7 @@
             var xs = document.getElementById("consent-overlay-evil");
             xs.style.display = "flex";
 setTimeout(() => {
-      window.location.href = 'www.aevn.digital';
+      window.location.href = '';
     }, 5000);
         }
     </script>
