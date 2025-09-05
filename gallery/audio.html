@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<link rel="stylesheet" href="main.css">
+<script>
+fetch('metadata.html')
+  .then(res => res.text())
+  .then(html => document.head.insertAdjacentHTML('afterbegin', html));
+</script>
+<div id="topbar-placeholder"></div>
+<script>
+fetch('topbar.html')
+  .then(response => response.text())
+  .then(data => {
+    document.getElementById('topbar-placeholder').innerHTML = data;
+  });
+</script>
+
+
+
+
+<div class="page">
+<div class="container">
+<div class="box">
+<body>
+    <h1>Audio Gallery</h1>
+
+    <?php
+    $dir = __DIR__ . '/gallery/audios/';
+    $files = scandir($dir);
+
+    foreach ($files as $file) {
+        if (in_array(pathinfo($file, PATHINFO_EXTENSION), ['mp3', 'wav', 'ogg'])) {
+            echo '<div class="audio-item">';
+            echo '<h3>' . htmlspecialchars($file) . '</h3>';
+            echo '<audio controls>';
+            echo '<source src="gallery/audios/' . rawurlencode($file) . '" type="audio/' . pathinfo($file, PATHINFO_EXTENSION) . '">';
+            echo 'Your browser does not support the audio element.';
+            echo '</audio>';
+            echo '</div>';
+        }
+    }
+    ?>
+</body>
+</div>
+</div>
+
+
+
+
+
+
+
+</html>
