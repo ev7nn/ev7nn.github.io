@@ -1,11 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <link rel="stylesheet" href="main.css">
-<?php include 'stylestuff.html'; ?>
+
+<script>
+fetch('metadata.html')
+  .then(res => res.text())
+  .then(html => document.head.insertAdjacentHTML('afterbegin', html));
+</script>
 
 <body>
     <div class="topbar" style="height: 100vh;">
-        <p class="fade" style="font-size: 6vw;filter:blur(1.5px);">aevndigital</p>
+        <p class="fade" style="font-size: 1040%;filter:blur(1.5px);">aevndigital</p>
         <div class="nav" role="navigation" aria-label="Site">
             <a class="fade"><br></a>
             <a class="fade" href="#gallery" style="font-size: 2vw;filter:blur(0.8px);">gallery</a>
@@ -13,5 +18,6 @@
             <a class="fade" href="#end" style="font-size: 2vw;filter:blur(0.8px);">about</a>
         </div>
     </div>
+</body>
 
 </html>
