@@ -22,24 +22,155 @@ fetch('/topbar.html')
 <div class="container">
 <div class="box">
 <body>
-    <h1>Audio Gallery</h1>
 
-    <?php
-    $dir = __DIR__ . '/gallery/audios/';
-    $files = scandir($dir);
+  <main>
+    <div class="controls">
+      <input id="search" type="text" placeholder="Filter by filename or folder..." />
+      <select id="sort">
+        <option value="name-asc">Name A→Z</option>
+        <option value="name-desc">Name Z→A</option>
+      </select>
+      <span id="count"></span>
+    </div>
 
-    foreach ($files as $file) {
-        if (in_array(pathinfo($file, PATHINFO_EXTENSION), ['mp3', 'wav', 'ogg'])) {
-            echo '<div class="audio-item">';
-            echo '<h3>' . htmlspecialchars($file) . '</h3>';
-            echo '<audio controls>';
-            echo '<source src="gallery/audios/' . rawurlencode($file) . '" type="audio/' . pathinfo($file, PATHINFO_EXTENSION) . '">';
-            echo 'Your browser does not support the audio element.';
-            echo '</audio>';
-            echo '</div>';
-        }
+    <div id="list" class="list" aria-live="polite"></div>
+  </main>
+
+  <script>
+    // Configuration
+    const BASE = 'gallery/audio/';
+    const MANIFEST_URL = BASE + 'manifest.json';
+    const SUPPORTED_EXTS = /\.(mp3|ogg|wav|m4a|aac|flac|opus)$/i;
+
+    const state = {
+      items: [],
+      query: '',
+      sort: 'name-asc'
+    };
+
+    const $list = document.getElementById('list');
+    const $search = document.getElementById('search');
+    const $sort = document.getElementById('sort');
+    const $count = document.getElementById('count');
+
+    function normalize(items) {
+      // Accept array of strings or array of objects with { path, title? }
+      return items
+        .map(entry => {
+          if (typeof entry === 'string') return { path: entry };
+          if (entry && typeof entry === 'object' && entry.path) return entry;
+          return null;
+        })
+        .filter(Boolean)
+        .map(item => {
+          const path = item.path.replace(/^(\.\/)?/, '').trim();
+          const name = path.split('/').pop();
+          const url = BASE + path;
+          const title = item.title || name;
+          return { path, name, url, title };
+        })
+        .filter(it => SUPPORTED_EXTS.test(it.path));
     }
-    ?>
+
+    function applyFilters(items) {
+      let out = items;
+      if (state.query) {
+        const q = state.query.toLowerCase();
+        out = out.filter(it =>
+          it.path.toLowerCase().includes(q) ||
+          it.title.toLowerCase().includes(q)
+        );
+      }
+      if (state.sort === 'name-asc') {
+        out = out.slice().sort((a,b) => a.name.localeCompare(b.name));
+      } else if (state.sort === 'name-desc') {
+        out = out.slice().sort((a,b) => b.name.localeCompare(a.name));
+      }
+      return out;
+    }
+
+    function render() {
+      const list = applyFilters(state.items);
+      $count.textContent = list.length + ' file' + (list.length === 1 ? '' : 's');
+      $list.innerHTML = '';
+
+      list.forEach(it => {
+        const row = document.createElement('div');
+        row.className = 'row';
+
+        const left = document.createElement('div');
+        left.className = 'stack';
+
+        const meta = document.createElement('div');
+        meta.className = 'meta';
+
+        const nameEl = document.createElement('div');
+        nameEl.className = 'name';
+        nameEl.textContent = it.title;
+
+        const pathEl = document.createElement('div');
+        pathEl.className = 'path';
+        pathEl.textContent = it.path;
+
+        meta.appendChild(nameEl);
+        meta.appendChild(pathEl);
+
+        const audio = document.createElement('audio');
+        audio.controls = true;
+        audio.preload = 'none';
+        audio.src = it.url;
+
+        left.appendChild(meta);
+        left.appendChild(audio);
+
+        const actions = document.createElement('div');
+        actions.className = 'actions';
+
+        const open = document.createElement('a');
+        open.href = it.url;
+        open.target = '_blank';
+        open.rel = 'noopener';
+        open.textContent = 'Open';
+
+        const download = document.createElement('a');
+        download.href = it.url;
+        download.download = it.name;
+        download.textContent = 'Download';
+
+        actions.appendChild(open);
+        actions.appendChild(download);
+
+        row.appendChild(left);
+        row.appendChild(actions);
+
+        $list.appendChild(row);
+      });
+    }
+
+    $search.addEventListener('input', (e) => {
+      state.query = e.target.value;
+      render();
+    });
+    $sort.addEventListener('change', (e) => {
+      state.sort = e.target.value;
+      render();
+    });
+
+    async function boot() {
+      try {
+        const res = await fetch(MANIFEST_URL, { cache: 'no-cache' });
+        if (!res.ok) throw new Error('Manifest not found: ' + MANIFEST_URL);
+        const arr = await res.json();
+        state.items = normalize(arr);
+      } catch (err) {
+        console.error(err);
+        state.items = [];
+      }
+      render();
+    }
+
+    boot();
+  </script>
 </body>
 </div>
 </div>

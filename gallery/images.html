@@ -22,25 +22,122 @@ fetch('/topbar.html')
 <div class="container">
 <div class="box">
 <body>
-    <h1>Audio Gallery</h1>
 
 
-    <?php
-    $dir = __DIR__ . '/gallery/images/';
-    $files = scandir($dir);
+  <main>
+    <div class="controls">
+      <input id="search" type="text" placeholder="Filter by filename..." />
+      <select id="sort">
+        <option value="name-asc">Name A→Z</option>
+        <option value="name-desc">Name Z→A</option>
+      </select>
+      <span id="count"></span>
+    </div>
+    <div id="grid" class="grid" aria-live="polite"></div>
+  </main>
 
-    $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+  <script>
+    // Configure the base folder and manifest path
+    const BASE = 'gallery/images/';
+    const MANIFEST_URL = BASE + 'manifest.json';
+    // Example manifest.json content you should create:
+    // ["photo1.jpg","logo.png","icons/icon-32.png","gallery/001.webp"]
 
-    foreach ($files as $file) {
-        $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-        if (in_array($ext, $allowed_extensions)) {
-            echo '<div class="image-item">';
-            echo '<h3>' . htmlspecialchars($file) . '</h3>';
-            echo '<img src="gallery/images/' . rawurlencode($file) . '" alt="' . htmlspecialchars($file) . '">';
-            echo '</div>';
-        }
+    const state = {
+      items: [],
+      query: '',
+      sort: 'name-asc'
+    };
+
+    const $grid = document.getElementById('grid');
+    const $search = document.getElementById('search');
+    const $sort = document.getElementById('sort');
+    const $count = document.getElementById('count');
+
+    function normalize(items) {
+      return items
+        .filter(Boolean)
+        .map(s => s.trim())
+        .filter(s => s.length > 0)
+        .map(path => ({
+          path,
+          url: BASE + path.replace(/^(\.\/)?/, ''),
+          name: path.split('/').pop()
+        }));
     }
-    ?>
+
+    function applyFilters(items) {
+      let out = items;
+      if (state.query) {
+        const q = state.query.toLowerCase();
+        out = out.filter(it => it.path.toLowerCase().includes(q));
+      }
+      if (state.sort === 'name-asc') {
+        out = out.slice().sort((a,b) => a.name.localeCompare(b.name));
+      } else if (state.sort === 'name-desc') {
+        out = out.slice().sort((a,b) => b.name.localeCompare(a.name));
+      }
+      return out;
+    }
+
+    function render() {
+      const list = applyFilters(state.items);
+      $count.textContent = list.length + ' image' + (list.length === 1 ? '' : 's');
+      $grid.innerHTML = '';
+      for (const it of list) {
+        const card = document.createElement('div');
+        card.className = 'card';
+
+        const img = document.createElement('img');
+        img.className = 'thumb';
+        img.loading = 'lazy';
+        img.alt = it.path;
+        img.src = it.url;
+        img.onerror = () => {
+          img.alt = '(missing) ' + it.path;
+          img.style.opacity = '0.4';
+          img.style.objectFit = 'contain';
+        };
+
+        const cap = document.createElement('div');
+        cap.className = 'caption';
+        const link = document.createElement('a');
+        link.href = it.url;
+        link.target = '_blank';
+        link.rel = 'noopener';
+        link.textContent = it.path;
+
+        cap.appendChild(link);
+        card.appendChild(img);
+        card.appendChild(cap);
+        $grid.appendChild(card);
+      }
+    }
+
+    $search.addEventListener('input', (e) => {
+      state.query = e.target.value;
+      render();
+    });
+    $sort.addEventListener('change', (e) => {
+      state.sort = e.target.value;
+      render();
+    });
+
+    async function boot() {
+      try {
+        const res = await fetch(MANIFEST_URL, { cache: 'no-cache' });
+        if (!res.ok) throw new Error('Manifest not found: ' + MANIFEST_URL);
+        const arr = await res.json();
+        state.items = normalize(arr);
+      } catch (err) {
+        console.error(err);
+        // Fallback: try common extensions with numeric pattern (only if you know them)
+        state.items = [];
+      }
+      render();
+    }
+    boot();
+  </script>
 </body>
 </div>
 </div>
