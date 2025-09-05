@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<link rel="stylesheet" href="main.css">
+
+<script>
+fetch('metadata.html')
+  .then(res => res.text())
+  .then(html => document.head.insertAdjacentHTML('afterbegin', html));
+</script>
+<script>
+fetch('topbar.html')
+  .then(res => res.text())
+  .then(html => document.head.insertAdjacentHTML('afterbegin', html));
+</script>
+
+<body>
+<a>test 67 67</a>
+</body>
+
+</html>
