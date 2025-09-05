@@ -35,7 +35,7 @@
         .topbar {
             padding: 15px 30px;
             font-size: 10px;
-            height: 10px;
+            height: 100px;
             background: linear-gradient(to bottom, #fff, #EEE 60%, #e4e5e5);
             border-bottom: 1px solid #dcdcdc;
         }
