@@ -93,6 +93,9 @@ fetch('/topbar.html')
         img.loading = 'lazy';
         img.alt = it.path;
         img.src = it.url;
+img.style.maxWidth = '100%';
+img.style.height = 'auto';
+img.style.display = 'block';
         img.onerror = () => {
           img.alt = '(missing) ' + it.path;
           img.style.opacity = '0.4';
