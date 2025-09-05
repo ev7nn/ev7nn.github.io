@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
-<!-- favicon for tab -->
-<link rel="icon" type="image/png" sizes="16x16" href="https://i.imgur.com/YlhsH4B.png">
-<title></title>
-
-
-
+<link rel="stylesheet" href="main.css">
+<script>
+fetch('metadata.html')
+  .then(res => res.text())
+  .then(html => document.head.insertAdjacentHTML('afterbegin', html));
+</script>
 
 <style>
     body {
@@ -13,122 +13,16 @@
         padding: 30;
         height: 100%;
     }
-
-    .holder {
-        background-color: #99CCFF;
-        padding-top: 2px;
-        padding-left: 10px;
-        padding-right: 10px;
-        padding-bottom: 2px;
-        margin-left: 120px;
-        margin-right: 120px;
-        margin-top: 20px;
-        margin-bottom: 20px;
-
-    }
-
-    p {
-        color: #FFFFFF;
-        font-size: 30;
-        font-family: tim
-    }
-
-    .topnav {
-
-        background-color: rgba(0, 0, 0, 1, 0);
-        list-style-type: none;
-        padding: 20;
-        width: 96%;
-        margin: 2%;
-
-    }
-
-    .clickable-img {
-        cursor: pointer;
-    }
-
-    #consent-overlay-evil {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 1);
-        display: none;
-        justify-content: center;
-        align-items: center;
-        z-index: 9999;
-    }
 </style>
 
-<body>
 
-
-    <!-- HEADER -->
-    <div class="topnav" style="text-align: left" id="return">
-        <!-- LOGO HOME -->
-        <a href="https://www.aevn.digital">
-            <img src="https://i.imgur.com/v1ovvQJ.gif" alt="logo" width="300px" height="90px" onmouseover="this.src='https://i.imgur.com/55QUecM.gif';" onmouseout="this.src='https://i.imgur.com/v1ovvQJ.gif';" />
-        </a>
-
-    </div>
-
-
-
-
-
-    <!-- MAIN --><!-- MAIN --><!-- MAIN --><!-- MAIN --><!-- MAIN --><!-- MAIN --><!-- MAIN --><!-- MAIN --><!-- MAIN -->
-
-
-
-
-
-    <img src="https://i.imgur.com/JiaZuog.gif" alt="i can see" class="clickable-img" onclick="eye1()" height="100" style="display: block; margin: 0 auto;margin-top:10%" />
-    <div id="consent-overlay-evil">
-
-    </div>
-
-    <audio id="speech" preload="auto">
-        <source src="iwannasee.mp3" type="audio/mpeg">
-    </audio>
-    <script>
-        function eye1() {
-            const audio = document.getElementById('speech');
-            setTimeout(() => {
-                audio.play()
-            }, 5000);
-        }
-
-        var xs = document.getElementById("consent-overlay-evil");
-        xs.style.display = "flex";
-        setTimeout(() => {
-            window.location.href = '/';
-        }, 6000);
-        }
-    </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <!-- FOOTER --><!-- FOOTER --><!-- FOOTER --><!-- FOOTER --><!-- FOOTER --><!-- FOOTER --><!-- FOOTER --><!-- FOOTER -->
-
-    <!-- OTHER -->
-    <script>
-        const titles = ['end of aevndigital'];
-        document.title = titles[Math.floor(Math.random() * titles.length)];
-    </script>
-
-    <script>
-    </script>
+<div id="topbar-placeholder"></div>
+<script>
+fetch('topbar.html')
+  .then(response => response.text())
+  .then(data => {
+    document.getElementById('topbar-placeholder').innerHTML = data;
+  });
+</script>
 </body>
-
 </html>
