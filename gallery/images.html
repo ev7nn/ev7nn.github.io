@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<link rel="stylesheet" href="main.css">
+<script>
+fetch('metadata.html')
+  .then(res => res.text())
+  .then(html => document.head.insertAdjacentHTML('afterbegin', html));
+</script>
+<div id="topbar-placeholder"></div>
+<script>
+fetch('topbar.html')
+  .then(response => response.text())
+  .then(data => {
+    document.getElementById('topbar-placeholder').innerHTML = data;
+  });
+</script>
+
+
+
+
+<div class="page">
+<div class="container">
+<div class="box">
+<body>
+    <h1>Audio Gallery</h1>
+
+
+    <?php
+    $dir = __DIR__ . '/gallery/images/';
+    $files = scandir($dir);
+
+    $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+
+    foreach ($files as $file) {
+        $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+        if (in_array($ext, $allowed_extensions)) {
+            echo '<div class="image-item">';
+            echo '<h3>' . htmlspecialchars($file) . '</h3>';
+            echo '<img src="gallery/images/' . rawurlencode($file) . '" alt="' . htmlspecialchars($file) . '">';
+            echo '</div>';
+        }
+    }
+    ?>
+</body>
+</div>
+</div>
+
+
+
+
+
+
+
+</html>
