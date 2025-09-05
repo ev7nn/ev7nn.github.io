@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-<link rel="stylesheet" href="main.css">
+<link rel="stylesheet" href="/main.css">
 <script>
-fetch('metadata.html')
+fetch('/metadata.html')
   .then(res => res.text())
   .then(html => document.head.insertAdjacentHTML('afterbegin', html));
 </script>
 <div id="topbar-placeholder"></div>
 <script>
-fetch('topbar.html')
+fetch('/topbar.html')
   .then(response => response.text())
   .then(data => {
     document.getElementById('topbar-placeholder').innerHTML = data;
