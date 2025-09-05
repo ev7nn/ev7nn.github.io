@@ -1,5 +1,26 @@
 <html lang="en">
 <head>
+
+<link rel="stylesheet" href="main.css">
+<script>
+fetch('metadata.html')
+  .then(res => res.text())
+  .then(html => document.head.insertAdjacentHTML('afterbegin', html));
+</script>
+
+
+
+
+<div id="topbar-placeholder"></div>
+<script>
+fetch('topbar.html')
+  .then(response => response.text())
+  .then(data => {
+    document.getElementById('topbar-placeholder').innerHTML = data;
+  });
+</script>
+
+
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="icon" type="image/png" sizes="16x16" href="https://i.imgur.com/YlhsH4B.png">
