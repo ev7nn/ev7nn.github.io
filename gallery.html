@@ -23,8 +23,24 @@ fetch('topbar.html')
 
 
 
-<body>
-<a>test 67 67</a>
-</body>
+<div class="page">
+<div class="container">
+<div class="box">
+<a href="gallery/images"> images<br></a>
+<a href="gallery/audio"> audio <br></a>
+</div>
+</div>
+</div>
+
+
+<div id="footer-placeholder"></div>
+<script>
+fetch('footer.html')
+  .then(response => response.text())
+  .then(data => {
+    document.getElementById('footer-placeholder').innerHTML = data;
+  });
+</script>
+
 
 </html>
