@@ -7,11 +7,21 @@ fetch('metadata.html')
   .then(res => res.text())
   .then(html => document.head.insertAdjacentHTML('afterbegin', html));
 </script>
+
+
+
+
+<div id="topbar-placeholder"></div>
 <script>
 fetch('topbar.html')
-  .then(res => res.text())
-  .then(html => document.head.insertAdjacentHTML('afterbegin', html));
+  .then(response => response.text())
+  .then(data => {
+    document.getElementById('topbar-placeholder').innerHTML = data;
+  });
 </script>
+
+
+
 
 <body>
 <a>test 67 67</a>
