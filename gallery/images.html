@@ -1,115 +1,154 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<link rel="stylesheet" href="/main.css">
-<script>
-fetch('/metadata.html')
-  .then(res => res.text())
-  .then(html => document.head.insertAdjacentHTML('afterbegin', html));
-</script>
-<style>
-  .masonry {
-    column-count: 4;
-    column-gap: 8px;
-    padding: 16px;
-  }
-  .masonry img {
-    width: 100%;
-    display: block;
-    margin-bottom: 8px;
-    border-radius: 2px;
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    break-inside: avoid;
-  }
-  .masonry img:hover {
-    transform: scale(1.02);
-  }
-
-  /* lightbox */
-  .lightbox {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.85);
-    z-index: 9999;
-    justify-content: center;
-    align-items: center;
-    cursor: zoom-out;
-  }
-  .lightbox.open { display: flex; }
-  .lightbox img {
-    max-width: 90vw;
-    max-height: 90vh;
-    border-radius: 2px;
-    object-fit: contain;
-  }
-
-  @media (max-width: 1200px) { .masonry { column-count: 3; } }
-  @media (max-width: 800px)  { .masonry { column-count: 2; } }
-  @media (max-width: 480px)  { .masonry { column-count: 2; column-gap: 4px; padding: 8px; } .masonry img { margin-bottom: 4px; border-radius: 4px; } }
-</style>
-</head>
-<body>
-
-<div id="topbar-placeholder"></div>
-<script>
-fetch('/topbar.html')
-  .then(r => r.text())
-  .then(d => document.getElementById('topbar-placeholder').innerHTML = d);
-</script>
-
-<div class="page">
-<div class="container">
-<div class="box">
-
-  <div id="grid" class="masonry"></div>
-
-  <div id="lightbox" class="lightbox" onclick="this.classList.remove('open')">
-    <img id="lb-img" src="" alt="">
-  </div>
-
+  <link rel="stylesheet" href="/main.css">
   <script>
-    const BASE = '/gallery/images/';
-    const MANIFEST_URL = BASE + 'manifest.json';
-    const $grid = document.getElementById('grid');
-    const $lb = document.getElementById('lightbox');
-    const $lbImg = document.getElementById('lb-img');
+    fetch('/metadata.html')
+      .then(res => res.text())
+      .then(html => document.head.insertAdjacentHTML('afterbegin', html));
+  </script>
+  <style>
+    .masonry {
+      column-count: 4;
+      column-gap: 8px;
+      padding: 16px;
+    }
 
-    async function boot() {
-      try {
-        const res = await fetch(MANIFEST_URL, { cache: 'no-cache' });
-        if (!res.ok) throw new Error('Manifest not found');
-        const files = await res.json();
+    .masonry img {
+      width: 100%;
+      display: block;
+      margin-bottom: 8px;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      break-inside: avoid;
+    }
 
-        for (const file of files) {
-          const url = BASE + file.replace(/^(\.\/)?/, '');
-          const img = document.createElement('img');
-          img.src = url;
-          img.alt = '';
-          img.loading = 'lazy';
-          img.onclick = () => {
-            $lbImg.src = url;
-            $lb.classList.add('open');
-          };
-          img.onerror = () => img.remove();
-          $grid.appendChild(img);
-        }
-      } catch (e) {
-        console.error(e);
+    .masonry img:hover {
+      transform: scale(1.02);
+    }
+
+    /* lightbox */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      cursor: zoom-out;
+    }
+
+    .lightbox.open {
+      display: flex;
+    }
+
+    .lightbox img {
+      max-width: 90vw;
+      max-height: 90vh;
+      border-radius: 2px;
+      object-fit: contain;
+    }
+
+    @media (max-width: 1200px) {
+      .masonry {
+        column-count: 3;
       }
     }
 
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') $lb.classList.remove('open');
-    });
+    @media (max-width: 800px) {
+      .masonry {
+        column-count: 2;
+      }
+    }
 
-    boot();
+    @media (max-width: 480px) {
+      .masonry {
+        column-count: 2;
+        column-gap: 4px;
+        padding: 8px;
+      }
+
+      .masonry img {
+        margin-bottom: 4px;
+        border-radius: 4px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="topbar-placeholder"></div>
+  <script>
+    fetch('/topbar.html')
+      .then(r => r.text())
+      .then(d => document.getElementById('topbar-placeholder').innerHTML = d);
   </script>
 
-</div>
-</div>
-</div>
+  <div class="page">
+    <div class="container">
+      <div class="box">
+
+        <div id="grid" class="masonry"></div>
+
+        <div id="lightbox" class="lightbox" onclick="this.classList.remove('open')">
+          <img id="lb-img" src="" alt="">
+        </div>
+
+        <script>
+          const BASE = '/gallery/images/';
+          const MANIFEST_URL = BASE + 'manifest.json';
+          const $grid = document.getElementById('grid');
+          const $lb = document.getElementById('lightbox');
+          const $lbImg = document.getElementById('lb-img');
+
+          function shuffle(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+              const j = Math.floor(Math.random() * (i + 1));
+              [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+          }
+
+          async function boot() {
+            try {
+              const res = await fetch(MANIFEST_URL, { cache: 'no-cache' });
+              if (!res.ok) throw new Error('Manifest not found');
+
+              const arr = await res.json();
+              shuffle(arr);
+              for (const file of arr) {
+                const url = BASE + file.replace(/^(\.\/)?/, '');
+                const img = document.createElement('img');
+                img.src = url;
+                img.alt = '';
+                img.loading = 'lazy';
+                img.onclick = () => {
+                  $lbImg.src = url;
+                  $lb.classList.add('open');
+                };
+                img.onerror = () => img.remove();
+                $grid.appendChild(img);
+              }
+            } catch (e) {
+              console.error(e);
+            }
+          }
+
+          document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') $lb.classList.remove('open');
+          });
+
+          boot();
+        </script>
+
+      </div>
+    </div>
+  </div>
 
 </body>
+
 </html>
