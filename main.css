@@ -3,8 +3,8 @@
             --bg: #f7f7f7;
             --fg: #678a99;
             --muted-fg: #c2c0be
-            --link: #ade0c9;
-            --link-visited: #7ebda6;
+            --link: #678A99;
+            --link-visited: #678A99;
             --border: #f5f5f5;
             --base-font: "Courier New", Courier, "Liberation Mono", Menlo, Consolas, monospace;
             --base-font-size: 16px;
@@ -27,8 +27,8 @@
         .page {
             width: 760px;
             margin: 0 auto;
-            border-left: 2px solid #ddd;
-            border-right: 2px solid #ddd;
+            border-left: 2px solid #eee;
+            border-right: 2px solid #eee;
             background: #fff;
             min-height: 100svh;
         }
@@ -120,10 +120,10 @@
             color: var(--muted-fg);
         }
         .box {
-            border: 1px solid #dcdcdc;
+            border: 1px solid #eee;
             background: #ffffff;
             padding: 8px;
-            margin: 10px 0;
+            margin: 5px 0;
         }
 
         .box-header {
