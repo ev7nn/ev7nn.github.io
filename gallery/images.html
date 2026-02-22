@@ -1,154 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
+<head>
 <link rel="stylesheet" href="/main.css">
 <script>
 fetch('/metadata.html')
   .then(res => res.text())
   .then(html => document.head.insertAdjacentHTML('afterbegin', html));
 </script>
+<style>
+  .masonry {
+    column-count: 4;
+    column-gap: 8px;
+    padding: 16px;
+  }
+  .masonry img {
+    width: 100%;
+    display: block;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    break-inside: avoid;
+  }
+  .masonry img:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+
+  /* lightbox */
+  .lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    cursor: zoom-out;
+  }
+  .lightbox.open { display: flex; }
+  .lightbox img {
+    max-width: 90vw;
+    max-height: 90vh;
+    border-radius: 6px;
+    object-fit: contain;
+  }
+
+  @media (max-width: 1200px) { .masonry { column-count: 3; } }
+  @media (max-width: 800px)  { .masonry { column-count: 2; } }
+  @media (max-width: 480px)  { .masonry { column-count: 2; column-gap: 4px; padding: 8px; } .masonry img { margin-bottom: 4px; border-radius: 4px; } }
+</style>
+</head>
+<body>
+
 <div id="topbar-placeholder"></div>
 <script>
 fetch('/topbar.html')
-  .then(response => response.text())
-  .then(data => {
-    document.getElementById('topbar-placeholder').innerHTML = data;
-  });
+  .then(r => r.text())
+  .then(d => document.getElementById('topbar-placeholder').innerHTML = d);
 </script>
-
-
-
 
 <div class="page">
 <div class="container">
 <div class="box">
-<body>
 
+  <div id="grid" class="masonry"></div>
 
-  <main>
-    <div class="controls">
-      <input id="search" type="text" placeholder="Filter by filename..." />
-      <select id="sort">
-        <option value="name-asc">Name A→Z</option>
-        <option value="name-desc">Name Z→A</option>
-      </select>
-      <span id="count"></span>
-    </div>
-    <div id="grid" class="grid" aria-live="polite"></div>
-  </main>
+  <div id="lightbox" class="lightbox" onclick="this.classList.remove('open')">
+    <img id="lb-img" src="" alt="">
+  </div>
 
   <script>
-    // Configure the base folder and manifest path
     const BASE = '/gallery/images/';
     const MANIFEST_URL = BASE + 'manifest.json';
-    // Example manifest.json content you should create:
-    // ["photo1.jpg","logo.png","icons/icon-32.png","gallery/001.webp"]
-
-    const state = {
-      items: [],
-      query: '',
-      sort: 'name-asc'
-    };
-
     const $grid = document.getElementById('grid');
-    const $search = document.getElementById('search');
-    const $sort = document.getElementById('sort');
-    const $count = document.getElementById('count');
-
-    function normalize(items) {
-      return items
-        .filter(Boolean)
-        .map(s => s.trim())
-        .filter(s => s.length > 0)
-        .map(path => ({
-          path,
-          url: BASE + path.replace(/^(\.\/)?/, ''),
-          name: path.split('/').pop()
-        }));
-    }
-
-    function applyFilters(items) {
-      let out = items;
-      if (state.query) {
-        const q = state.query.toLowerCase();
-        out = out.filter(it => it.path.toLowerCase().includes(q));
-      }
-      if (state.sort === 'name-asc') {
-        out = out.slice().sort((a,b) => a.name.localeCompare(b.name));
-      } else if (state.sort === 'name-desc') {
-        out = out.slice().sort((a,b) => b.name.localeCompare(a.name));
-      }
-      return out;
-    }
-
-    function render() {
-      const list = applyFilters(state.items);
-      $count.textContent = list.length + ' image' + (list.length === 1 ? '' : 's');
-      $grid.innerHTML = '';
-      for (const it of list) {
-        const card = document.createElement('div');
-        card.className = 'card';
-
-        const img = document.createElement('img');
-        img.className = 'thumb';
-        img.loading = 'lazy';
-        img.alt = it.path;
-        img.src = it.url;
-img.style.maxWidth = '100%';
-img.style.height = 'auto';
-img.style.display = 'block';
-        img.onerror = () => {
-          img.alt = '(missing) ' + it.path;
-          img.style.opacity = '0.4';
-          img.style.objectFit = 'contain';
-        };
-
-        const cap = document.createElement('div');
-        cap.className = 'caption';
-        const link = document.createElement('a');
-        link.href = it.url;
-        link.target = '_blank';
-        link.rel = 'noopener';
-        link.textContent = it.path;
-
-        cap.appendChild(link);
-        card.appendChild(img);
-        card.appendChild(cap);
-        $grid.appendChild(card);
-      }
-    }
-
-    $search.addEventListener('input', (e) => {
-      state.query = e.target.value;
-      render();
-    });
-    $sort.addEventListener('change', (e) => {
-      state.sort = e.target.value;
-      render();
-    });
+    const $lb = document.getElementById('lightbox');
+    const $lbImg = document.getElementById('lb-img');
 
     async function boot() {
       try {
         const res = await fetch(MANIFEST_URL, { cache: 'no-cache' });
-        if (!res.ok) throw new Error('Manifest not found: ' + MANIFEST_URL);
-        const arr = await res.json();
-        state.items = normalize(arr);
-      } catch (err) {
-        console.error(err);
-        // Fallback: try common extensions with numeric pattern (only if you know them)
-        state.items = [];
+        if (!res.ok) throw new Error('Manifest not found');
+        const files = await res.json();
+
+        for (const file of files) {
+          const url = BASE + file.replace(/^(\.\/)?/, '');
+          const img = document.createElement('img');
+          img.src = url;
+          img.alt = '';
+          img.loading = 'lazy';
+          img.onclick = () => {
+            $lbImg.src = url;
+            $lb.classList.add('open');
+          };
+          img.onerror = () => img.remove();
+          $grid.appendChild(img);
+        }
+      } catch (e) {
+        console.error(e);
       }
-      render();
     }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') $lb.classList.remove('open');
+    });
+
     boot();
   </script>
+
+</div>
+</div>
+</div>
+
 </body>
-</div>
-</div>
-
-
-
-
-
-
-
 </html>
