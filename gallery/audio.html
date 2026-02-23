@@ -1,222 +1,440 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<link rel="stylesheet" href="/main.css">
-<script>
-fetch('/metadata.html')
-  .then(res => res.text())
-  .then(html => document.head.insertAdjacentHTML('afterbegin', html));
-</script>
-<style>
-  .audio-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 10px;
-    padding: 16px;
-  }
-  .audio-grid .tile {
-    aspect-ratio: 1;
-    border-radius: 2px;
-    overflow: hidden;
-    cursor: pointer;
-    position: relative;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-  .audio-grid .tile:hover {
-    transform: scale(1.03);
-  }
-  .audio-grid .tile img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-  .audio-grid .tile .play-icon {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0,0,0,0);
-    transition: background 0.2s;
-    pointer-events: none;
-  }
-  .audio-grid .tile:hover .play-icon {
-    background: rgba(0,0,0,0);
-  }
-  .play-icon svg {
-    width: 48px;
-    height: 48px;
-    fill: white;
-    opacity: 0;
-    transition: opacity 0.2s;
-  }
-  .audio-grid .tile:hover .play-icon svg {
-    opacity: 1;
-  }
-  .audio-grid .tile .tile-title {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 8px;
-    color: white;
-    font-size: 13px;
-    font-weight: bold;
-    background: linear-gradient(transparent, rgba(0,0,0,0.7));
-    text-shadow: 0 1px 4px rgba(0,0,0,0.6);
-    word-break: break-word;
-  }
-
-
-  /* lightbox */
-  .lb {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.88);
-    z-index: 9999;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    gap: 20px;
-  }
-  .lb.open { display: flex; }
-  .lb .lb-close {
-    position: absolute;
-    top: 16px;
-    right: 20px;
-    font-size: 32px;
-    color: white;
-    cursor: pointer;
-    background: none;
-    border: none;
-    font-family: inherit;
-    line-height: 1;
-  }
-  .lb .lb-cover {
-    max-width: 400px;
-    max-height: 50vh;
-    border-radius: 2px;
-    object-fit: contain;
-  }
-  .lb .lb-title {
-    color: white;
-    font-size: 16px;
-    text-align: center;
-    max-width: 80vw;
-    word-break: break-word;
-  }
-  .lb audio {
-    width: min(400px, 80vw);
-  }
-
-  @media (max-width: 480px) {
-    .audio-grid {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 6px;
-      padding: 8px;
-    }
-  }
-</style>
-</head>
-<body>
-
-<div id="topbar-placeholder"></div>
-<script>
-fetch('/topbar.html')
-  .then(r => r.text())
-  .then(d => document.getElementById('topbar-placeholder').innerHTML = d);
-</script>
-
-<div class="page">
-<div class="container">
-<div class="box">
-
-  <div id="grid" class="audio-grid"></div>
-
-  <div id="lb" class="lb">
-    <button class="lb-close" onclick="closeLB()">&times;</button>
-    <img id="lb-cover" class="lb-cover" src="" alt="">
-    <div id="lb-title" class="lb-title"></div>
-    <audio id="lb-audio" controls></audio>
-  </div>
-
+  <link rel="stylesheet" href="/main.css">
   <script>
-    const BASE = '/gallery/audio/';
-    const $grid = document.getElementById('grid');
-    const $lb = document.getElementById('lb');
-    const $lbCover = document.getElementById('lb-cover');
-    const $lbTitle = document.getElementById('lb-title');
-    const $lbAudio = document.getElementById('lb-audio');
-
-    function openLB(audioUrl, coverUrl, title) {
-      $lbCover.src = coverUrl;
-      $lbTitle.textContent = title;
-      $lbAudio.src = audioUrl;
-      $lb.classList.add('open');
+    fetch('/metadata.html')
+      .then(res => res.text())
+      .then(html => document.head.insertAdjacentHTML('afterbegin', html));
+  </script>
+  <style>
+    .drop-zone-wrapper {
+      display: flex;
+      justify-content: center;
+      padding: 20px 16px;
     }
 
-    function closeLB() {
-      $lbAudio.pause();
-      $lbAudio.src = '';
-      $lb.classList.remove('open');
+    .drop-zone {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      border: 2px dashed #555;
+      background: rgba(255, 255, 255, 0.03);
+      transition: border-color 0.3s, background 0.3s;
+      width: min(600px, 90vw);
+      position: relative;
     }
 
-    $lb.addEventListener('click', e => {
-      if (e.target === $lb) closeLB();
-    });
+    .drop-zone.over {
+      border-color: #aaa;
+      background: rgba(255, 255, 255, 0.08);
+    }
 
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') closeLB();
-    });
+    .drop-zone.loaded {
+      border-style: solid;
+      border-color: #444;
+    }
 
-    const playSVG = `<svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>`;
+    .drop-zone.inserting {
+      border-color: #777;
+      animation: pulse 0.5s ease-in-out 2;
+    }
 
-    async function boot() {
-      try {
-        const res = await fetch(BASE + 'manifest.json', { cache: 'no-cache' });
-        if (!res.ok) throw new Error('Manifest not found');
-        const pairs = await res.json();
+    @keyframes pulse {
 
-        for (const [audioFile, coverFile] of pairs) {
-          const audioUrl = BASE + audioFile;
-          const coverUrl = BASE + coverFile;
-          const title = audioFile.replace(/\.[^.]+$/, '');
+      0%,
+      100% {
+        background: rgba(255, 255, 255, 0.03);
+      }
 
-          const tile = document.createElement('div');
-          tile.className = 'tile';
-
-          const img = document.createElement('img');
-          img.src = coverUrl;
-          img.alt = '';
-          img.loading = 'lazy';
-
-          const icon = document.createElement('div');
-          icon.className = 'play-icon';
-          icon.innerHTML = playSVG;
-
-          tile.appendChild(img);
-          tile.appendChild(icon);
-          const label = document.createElement('div');
-          label.className = 'tile-title';
-          label.textContent = title;
-          tile.appendChild(label);
-          tile.onclick = () => openLB(audioUrl, coverUrl, title);
-
-          $grid.appendChild(tile);
-        }
-      } catch (e) {
-        console.error(e);
+      50% {
+        background: rgba(255, 255, 255, 0.1);
       }
     }
 
-    boot();
+    .drop-cover {
+      width: 80px;
+      height: 80px;
+      border-radius: 4px;
+      object-fit: cover;
+      flex-shrink: 0;
+      display: none;
+    }
+
+    .drop-cover.visible {
+      display: block;
+    }
+
+    @keyframes spin {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .drop-cover.spinning {
+      animation: spin 4s linear infinite;
+      border-radius: 50%;
+    }
+
+    .drop-info {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .drop-placeholder {
+      color: #666;
+      font-size: 14px;
+      text-align: center;
+      padding: 10px;
+    }
+
+    .drop-title {
+      color: rgb(66, 66, 66);
+      font-size: 14px;
+      font-weight: bold;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: none;
+    }
+
+    .drop-title.visible {
+      display: block;
+    }
+
+    .drop-audio {
+      width: 100%;
+      display: none;
+    }
+
+    .drop-audio.visible {
+      display: block;
+    }
+
+    .eject-btn {
+      background: none;
+      border: 1px solid #555;
+      color: #999;
+      border-radius: 4px;
+      padding: 6px 12px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: all 0.2s;
+      display: none;
+      flex-shrink: 0;
+    }
+
+    .eject-btn.visible {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .eject-btn:hover {
+      border-color: #999;
+      color: white;
+    }
+
+    .eject-btn svg {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+    }
+
+    .audio-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 10px;
+      padding: 16px;
+    }
+
+    .audio-grid .tile {
+      aspect-ratio: 1;
+      border-radius: 2px;
+      overflow: hidden;
+      cursor: grab;
+      position: relative;
+      transition: transform 0.2s ease;
+      user-select: none;
+    }
+
+    .audio-grid .tile:active {
+      cursor: grabbing;
+    }
+
+    .audio-grid .tile:hover {
+      transform: scale(1.03);
+    }
+
+    .audio-grid .tile.dragging {
+      opacity: 0.4;
+    }
+
+    .audio-grid .tile img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      pointer-events: none;
+    }
+
+    .audio-grid .tile .play-icon {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .play-icon svg {
+      width: 48px;
+      height: 48px;
+      fill: white;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .audio-grid .tile:hover .play-icon svg {
+      opacity: 1;
+    }
+
+    .audio-grid .tile .tile-title {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 8px;
+      color: white;
+      font-size: 13px;
+      font-weight: bold;
+      background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+      word-break: break-word;
+      pointer-events: none;
+    }
+
+    @media (max-width: 480px) {
+      .audio-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+        padding: 8px;
+      }
+
+      .drop-zone {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .drop-cover {
+        width: 60px;
+        height: 60px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="topbar-placeholder"></div>
+  <script>
+    fetch('/topbar.html')
+      .then(r => r.text())
+      .then(d => document.getElementById('topbar-placeholder').innerHTML = d);
   </script>
 
-</div>
-</div>
-</div>
+  <div class="page">
+    <div class="container">
+      <div class="box">
+
+        <div class="drop-zone-wrapper">
+          <div id="drop-zone" class="drop-zone">
+            <img id="drop-cover" class="drop-cover" src="" alt="">
+            <div class="drop-info">
+              <div id="drop-placeholder" class="drop-placeholder">drag a track here to play</div>
+              <div id="drop-title" class="drop-title"></div>
+              <audio id="drop-audio" class="drop-audio" controls></audio>
+            </div>
+            <button id="eject-btn" class="eject-btn" onclick="eject()">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 5l-8 9h16l-8-9zM4 16h16v2H4v-2z" />
+              </svg>
+              eject
+            </button>
+          </div>
+        </div>
+
+        <div id="grid" class="audio-grid"></div>
+
+        <!-- INSERT SOUND: change this src to your CD insert sound effect -->
+        <audio id="insert-sfx" src="/gallery/insert.wav" preload="auto"></audio>
+        <!-- EJECT SOUND: change this src to your eject sound effect -->
+        <audio id="eject-sfx" src="/gallery/eject.wav" preload="auto"></audio>
+
+        <script>
+          const BASE = '/gallery/audio/';
+          const $grid = document.getElementById('grid');
+          const $dropZone = document.getElementById('drop-zone');
+          const $dropCover = document.getElementById('drop-cover');
+          const $dropTitle = document.getElementById('drop-title');
+          const $dropAudio = document.getElementById('drop-audio');
+          const $dropPlaceholder = document.getElementById('drop-placeholder');
+          const $ejectBtn = document.getElementById('eject-btn');
+          const $insertSfx = document.getElementById('insert-sfx');
+          const $ejectSfx = document.getElementById('eject-sfx');
+
+          let inserting = false;
+
+          function loadTrack(audioUrl, coverUrl, title) {
+            if (inserting) return;
+            inserting = true;
+
+            // stop current track if playing
+            $dropAudio.pause();
+            $dropAudio.src = '';
+
+            // play insert sound
+            $insertSfx.currentTime = 0;
+            $insertSfx.play().catch(() => { });
+
+            // show inserting state
+            $dropZone.classList.add('inserting');
+            $dropPlaceholder.textContent = 'loading...';
+            $dropPlaceholder.style.display = '';
+
+            // hide previous track info during insert
+            $dropCover.classList.remove('visible');
+            $dropTitle.classList.remove('visible');
+            $dropAudio.classList.remove('visible');
+            $ejectBtn.classList.remove('visible');
+            $dropZone.classList.remove('loaded');
+
+            setTimeout(() => {
+
+              $dropCover.src = coverUrl;
+              $dropCover.classList.add('visible');
+              $dropCover.classList.add('spinning');
+              $dropTitle.textContent = title;
+              $dropTitle.classList.add('visible');
+              $dropAudio.src = audioUrl;
+              $dropAudio.classList.add('visible');
+              $dropPlaceholder.style.display = 'none';
+              $dropZone.classList.remove('inserting');
+              $dropZone.classList.add('loaded');
+              $ejectBtn.classList.add('visible');
+              $dropAudio.play();
+              inserting = false;
+            }, 1000);
+          }
+
+          function eject() {
+            if (inserting) return;
+
+            $dropAudio.pause();
+            $dropAudio.src = '';
+
+            $ejectSfx.currentTime = 0;
+            $ejectSfx.play().catch(() => { });
+            $dropCover.classList.remove('spinning');
+            $dropCover.classList.remove('visible');
+            $dropTitle.classList.remove('visible');
+            $dropAudio.classList.remove('visible');
+            $ejectBtn.classList.remove('visible');
+            $dropZone.classList.remove('loaded');
+            $dropPlaceholder.textContent = 'drag a track here to play';
+            $dropPlaceholder.style.display = '';
+          }
+
+          $dropZone.addEventListener('dragover', e => {
+            e.preventDefault();
+            if (!inserting) $dropZone.classList.add('over');
+          });
+
+          $dropZone.addEventListener('dragleave', () => {
+            $dropZone.classList.remove('over');
+          });
+
+          $dropZone.addEventListener('drop', e => {
+            e.preventDefault();
+            $dropZone.classList.remove('over');
+            const audioUrl = e.dataTransfer.getData('audio-url');
+            const coverUrl = e.dataTransfer.getData('cover-url');
+            const title = e.dataTransfer.getData('title');
+            if (audioUrl) loadTrack(audioUrl, coverUrl, title);
+          });
+
+          const playSVG = `<svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>`;
+
+          async function boot() {
+            try {
+              const res = await fetch(BASE + 'manifest.json', { cache: 'no-cache' });
+              if (!res.ok) throw new Error('Manifest not found');
+              const pairs = await res.json();
+
+              for (const [audioFile, coverFile] of pairs) {
+                const audioUrl = BASE + audioFile;
+                const coverUrl = BASE + coverFile;
+                const title = audioFile.replace(/\.[^.]+$/, '');
+
+                const tile = document.createElement('div');
+                tile.className = 'tile';
+                tile.draggable = true;
+
+                tile.addEventListener('dragstart', e => {
+                  if (inserting) { e.preventDefault(); return; }
+                  e.dataTransfer.setData('audio-url', audioUrl);
+                  e.dataTransfer.setData('cover-url', coverUrl);
+                  e.dataTransfer.setData('title', title);
+                  tile.classList.add('dragging');
+                });
+
+                tile.addEventListener('dragend', () => {
+                  tile.classList.remove('dragging');
+                });
+
+                tile.addEventListener('click', () => {
+                  loadTrack(audioUrl, coverUrl, title);
+                });
+
+                const img = document.createElement('img');
+                img.src = coverUrl;
+                img.alt = '';
+                img.loading = 'lazy';
+
+                const icon = document.createElement('div');
+                icon.className = 'play-icon';
+                icon.innerHTML = playSVG;
+
+                const label = document.createElement('div');
+                label.className = 'tile-title';
+                label.textContent = title;
+
+                tile.appendChild(img);
+                tile.appendChild(icon);
+                tile.appendChild(label);
+                $grid.appendChild(tile);
+              }
+            } catch (e) {
+              console.error(e);
+            }
+          }
+
+          boot();
+        </script>
+
+      </div>
+    </div>
+  </div>
 
 </body>
+
 </html>
