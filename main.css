@@ -74,7 +74,7 @@
             margin-right: 2vw;
         }
         .nav a:visited {
-            color: var(--link-visited);
+            color: var(--link);
         }
         .nav a:hover
         .marquee-line {

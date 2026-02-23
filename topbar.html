@@ -1,11 +1,64 @@
-<div class="topbar" style="gap:3%;display:flex;align-items:center;filter:blur(0px);overflow:hidden;">
-    <a href="/" style="text-decoration:none;position:relative;top:60%;">
-        <img src="/tallaevndigital blue.png" alt="aevndigital" style="height:clamp(150px,4vw,60px);display:block;">
+<style>
+    .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 3%;
+        flex-wrap: wrap;
+        overflow: hidden;
+    }
+
+    .topbar-logo img {
+        height: clamp(30px, 4vw, 40px);
+        width: clamp(500px, 18vw, 500px);
+        display: block;
+        transition: all 0.2s;
+    }
+
+    .topbar-nav {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: clamp(10px, 3vw, 30px);
+    }
+
+    .topbar-nav a {
+        color: #999999;
+        font-size: clamp(25px, 1.5vw, 30px);
+        text-decoration: none;
+        white-space: nowrap;
+        transition: all 0.5s;
+    }
+
+    .topbar-nav a:hover {
+        color: #797979;
+        transform: scale(1.02);
+    }
+
+    @media (max-width: 480px) {
+        .topbar {
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .topbar-nav {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .topbar-nav a {
+            font-size: 14px;
+        }
+    }
+</style>
+
+<div class="topbar">
+    <a href="/" class="topbar-logo">
+        <img src="/logoefx.png" alt="aevndigital">
     </a>
-    <div
-        style="width:1000vw;display: flex;justify-content: right;align-items: center;gap:3%;padding:3%; white-space: pre-wrap;  ">
-        <a href="/gallery" style="font-size: clamp(1vw, 110vw, 1.25vw);text-decoration: none;">gallery </a>
-        <a href="/contact" style="font-size: clamp(1vw, 110vw, 1.25vw);text-decoration: none;">contact </a>
-        <a href="/end" style="font-size: clamp(1vw, 110vw, 1.25vw);text-decoration: none;">about</a>
+    <div class="topbar-nav">
+        <a href="/gallery">gallery</a>
+        <a href="/contact">contact</a>
+        <a href="/end">about</a>
     </div>
 </div>

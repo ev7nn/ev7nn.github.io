@@ -2,29 +2,51 @@
 <html lang="en">
 <link rel="stylesheet" href="/main.css">
 <script>
-fetch('/metadata.html')
-  .then(res => res.text())
-  .then(html => document.head.insertAdjacentHTML('afterbegin', html));
+  fetch('/metadata.html')
+    .then(res => res.text())
+    .then(html => document.head.insertAdjacentHTML('afterbegin', html));
 </script>
 <div id="topbar-placeholder"></div>
 <script>
-fetch('/topbar.html')
-  .then(response => response.text())
-  .then(data => {
-    document.getElementById('topbar-placeholder').innerHTML = data;
-  });
+  fetch('/topbar.html')
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById('topbar-placeholder').innerHTML = data;
+    });
 </script>
+
+<style>
+  .box a {
+    display: inline-block;
+    color: #999999;
+    font-size: clamp(0.2rem, 2.5rem, 2.5rem);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all 0.3s;
+
+  }
+
+  .box a:visited {
+    color: #999999;
+  }
+
+  .box a:hover {
+    color: #797979;
+    transform: scale(1.05);
+  }
+</style>
 
 
 
 
 <div class="page">
-<div class="container">
-<div class="box" style="display: flex;flex-direction: column;justify-content: space-evenly;align-items: center;height: 60vh;">
-<a href="/gallery/images"> images<br></a>
-<a href="/gallery/audio"> audio <br></a>
-</div>
-</div>
+  <div class="container">
+    <div class="box"
+      style="display: flex;flex-direction: column;justify-content: space-evenly;align-items: center;height: 60vh;">
+      <a class="thing" href="/gallery/images"> look<br></a>
+      <a class="thing" href="/gallery/audio"> listen <br></a>
+    </div>
+  </div>
 
 
 
