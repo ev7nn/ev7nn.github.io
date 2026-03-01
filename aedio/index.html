@@ -85,8 +85,14 @@
 
     .controls {
       display: flex;
-      gap: 8px;
+      justify-content: space-between;
+      align-items: center;
       margin-top: 10px;
+    }
+
+    .controls-left, .controls-right {
+      display: flex;
+      gap: 8px;
     }
 
     .controls button {
@@ -101,9 +107,23 @@
       transition: all 0.2s;
     }
 
-    .controls button:hover { border-color: #999; color: #333; }
+    .controls button:hover:not(.disabled) { border-color: #999; color: #333; }
     .controls button.on { border-color: #333; color: #333; }
-    .controls button.hidden { display: none; }
+
+    .controls button.disabled {
+      opacity: 0.3;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    .controls button .icon {
+      display: inline-block;
+      font-family: sans-serif;
+      font-style: normal;
+      font-size: 14px;
+      line-height: 1;
+      vertical-align: middle;
+    }
 
     .section-label {
       font-size: 11px;
@@ -163,10 +183,14 @@
             </div>
             <audio id="audio" controls></audio>
             <div class="controls">
-              <button id="skip-btn" class="hidden" onclick="skipTrack()">skip</button>
-              <button id="eject-btn" class="hidden" onclick="eject()">eject</button>
-              <button id="shuffle-btn" onclick="toggleShuffle()">shuffle</button>
-              <button id="loop-btn" onclick="toggleLoop()">loop</button>
+              <div class="controls-left">
+                <button id="shuffle-btn" class="on" onclick="toggleShuffle()">shuffle</button>
+                <button id="loop-btn" class="on" onclick="toggleLoop()">loop</button>
+              </div>
+              <div class="controls-right">
+                <button id="skip-btn" class="disabled" onclick="skipTrack()"><span class="icon">⏭</span></button>
+                <button id="eject-btn" class="disabled" onclick="eject()"><span class="icon">⏏</span></button>
+              </div>
             </div>
           </div>
 
@@ -193,10 +217,21 @@
           let data = null;
           let currentPlaylist = null;
           let currentIndex = -1;
-          let shuffleOn = false;
-          let loopOn = false;
+          let shuffleOn = true;
+          let loopOn = true;
           let playOrder = [];
           let inserting = false;
+
+          function setStatus(text, active) {
+            $title.textContent = text;
+            document.title = text;
+            $title.classList.toggle('active', !!active);
+          }
+
+          function setTransportEnabled(enabled) {
+            $skipBtn.classList.toggle('disabled', !enabled);
+            $ejectBtn.classList.toggle('disabled', !enabled);
+          }
 
           function toggleShuffle() {
             shuffleOn = !shuffleOn;
@@ -226,8 +261,7 @@
             currentIndex = index;
             $audio.src = track.src;
             $audio.play().catch(() => {});
-            $title.textContent = track.title;
-            $title.classList.add('active');
+            setStatus(track.title, true);
 
             if (currentPlaylist.image) {
               $cover.src = currentPlaylist.image;
@@ -238,8 +272,7 @@
               $cover.classList.remove('spinning');
             }
 
-            $skipBtn.classList.remove('hidden');
-            $ejectBtn.classList.remove('hidden');
+            setTransportEnabled(true);
           }
 
           function nextTrack() {
@@ -258,7 +291,7 @@
           }
 
           function eject() {
-            if (inserting) return;
+            if (inserting || !currentPlaylist) return;
 
             $audio.pause();
             $audio.src = '';
@@ -268,10 +301,8 @@
 
             $cover.classList.remove('visible');
             $cover.classList.remove('spinning');
-            $title.textContent = 'nothing playing';
-            $title.classList.remove('active');
-            $skipBtn.classList.add('hidden');
-            $ejectBtn.classList.add('hidden');
+            setStatus('nothing playing', false);
+            setTransportEnabled(false);
 
             currentPlaylist = null;
             currentIndex = -1;
@@ -296,10 +327,8 @@
             $nowPlaying.classList.add('inserting');
             $cover.classList.remove('visible');
             $cover.classList.remove('spinning');
-            $title.textContent = 'loading...';
-            $title.classList.remove('active');
-            $skipBtn.classList.add('hidden');
-            $ejectBtn.classList.add('hidden');
+            setStatus('loading...', false);
+            setTransportEnabled(false);
 
             currentPlaylist = data.playlists[index];
             buildOrder();
@@ -316,6 +345,7 @@
           }
 
           async function boot() {
+            setStatus('nothing playing', false);
             try {
               const res = await fetch('main.json', { cache: 'no-cache' });
               if (!res.ok) throw new Error('failed to load main.json');
