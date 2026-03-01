@@ -11,7 +11,7 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     .player-wrapper {
-      width: min(600px, 90vw);
+      width: auto;
       margin: 0 auto;
     }
 
@@ -188,8 +188,8 @@
                 <button id="loop-btn" class="on" onclick="toggleLoop()">loop</button>
               </div>
               <div class="controls-right">
-                <button id="skip-btn" class="disabled" onclick="skipTrack()"><span class="icon">⏭</span></button>
-                <button id="eject-btn" class="disabled" onclick="eject()"><span class="icon">⏏</span></button>
+                <button id="skip-btn" class="disabled" onclick="skipTrack()">skip</button>
+                <button id="eject-btn" class="disabled" onclick="eject()">stop</button>
               </div>
             </div>
           </div>
@@ -255,6 +255,28 @@
             }
           }
 
+          function updateMediaSession(track) {
+            if (!('mediaSession' in navigator)) return;
+            const artwork = [];
+            if (currentPlaylist.image) {
+              artwork.push({ src: new URL(currentPlaylist.image, window.location.href).href, type: 'image/jpeg' });
+            }
+            navigator.mediaSession.metadata = new MediaMetadata({
+              title: track.title,
+              artist: currentPlaylist.name,
+              album: currentPlaylist.name,
+              artwork: artwork
+            });
+          }
+
+          function setupMediaHandlers() {
+            if (!('mediaSession' in navigator)) return;
+            navigator.mediaSession.setActionHandler('nexttrack', skipTrack);
+            navigator.mediaSession.setActionHandler('previoustrack', null);
+            navigator.mediaSession.setActionHandler('play', () => { $audio.play(); });
+            navigator.mediaSession.setActionHandler('pause', () => { $audio.pause(); });
+          }
+
           function playTrack(index) {
             const track = currentPlaylist.tracks[index];
             if (!track) return;
@@ -262,6 +284,7 @@
             $audio.src = track.src;
             $audio.play().catch(() => {});
             setStatus(track.title, true);
+            updateMediaSession(track);
 
             if (currentPlaylist.image) {
               $cover.src = currentPlaylist.image;
@@ -303,6 +326,10 @@
             $cover.classList.remove('spinning');
             setStatus('nothing playing', false);
             setTransportEnabled(false);
+
+            if ('mediaSession' in navigator) {
+              navigator.mediaSession.metadata = null;
+            }
 
             currentPlaylist = null;
             currentIndex = -1;
@@ -346,6 +373,7 @@
 
           async function boot() {
             setStatus('nothing playing', false);
+            setupMediaHandlers();
             try {
               const res = await fetch('main.json', { cache: 'no-cache' });
               if (!res.ok) throw new Error('failed to load main.json');

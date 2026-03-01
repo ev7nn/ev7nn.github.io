@@ -21,6 +21,13 @@ function JsonEscape($s) {
     return $s.Replace('\','\\').Replace('"','\"').Replace("`n",'\n').Replace("`r",'\r').Replace("`t",'\t')
 }
 
+function Strip-Brackets($s) {
+    $stripped = $s -replace '\[.*?\]\s*', ''
+    $stripped = $stripped.Trim()
+    if ([string]::IsNullOrWhiteSpace($stripped)) { return $s }
+    return $stripped
+}
+
 $playlists = [System.Collections.ArrayList]::new()
 
 foreach ($dir in (Get-ChildItem -Directory | Sort-Object Name)) {
@@ -45,7 +52,8 @@ foreach ($dir in (Get-ChildItem -Directory | Sort-Object Name)) {
             if ($fprobs.Count -gt 0) {
                 [void]$warnings.Add("Track  `"$($f.Name)`" in `"$($dir.Name)`" - $($fprobs -join ', ')")
             }
-            [void]$tracks.Add(@{ title = $f.BaseName; src = "$($dir.Name)/$($f.Name)" })
+            $title = Strip-Brackets $f.BaseName
+            [void]$tracks.Add(@{ title = $title; src = "$($dir.Name)/$($f.Name)" })
         }
     }
 
