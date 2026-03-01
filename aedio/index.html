@@ -160,14 +160,6 @@
   </style>
 </head>
 <body>
-
-  <div id="topbar-placeholder"></div>
-  <script>
-    fetch('/topbar.html')
-      .then(r => r.text())
-      .then(d => document.getElementById('topbar-placeholder').innerHTML = d);
-  </script>
-
   <div class="page">
     <div class="container">
       <div class="box">
@@ -184,8 +176,8 @@
             <audio id="audio" controls></audio>
             <div class="controls">
               <div class="controls-left">
-                <button id="shuffle-btn" class="on" onclick="toggleShuffle()">shuffle</button>
-                <button id="loop-btn" class="on" onclick="toggleLoop()">loop</button>
+                <button id="shuffle-btn" class="off" onclick="toggleShuffle()">shuffle</button>
+                <button id="loop-btn" onclick="toggleLoop()">loop</button>
               </div>
               <div class="controls-right">
                 <button id="skip-btn" class="disabled" onclick="skipTrack()">skip</button>
@@ -217,7 +209,7 @@
           let data = null;
           let currentPlaylist = null;
           let currentIndex = -1;
-          let shuffleOn = true;
+          let shuffleOn = false;
           let loopOn = true;
           let playOrder = [];
           let inserting = false;
