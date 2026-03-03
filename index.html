@@ -28,19 +28,17 @@
         .then(html => document.head.insertAdjacentHTML('afterbegin', html));
 </script>
 
-<body>
-    <div class="topbar" style="height: 110vh;">
+<body style="overflow-x: hidden;">
+    <div class="topbar" style="height: 110vh; overflow: hidden;">
        <a class="fadef"
     style="display:flex; width:90vw; max-width:100%; height:clamp(20px, 15vw, 200px); overflow:hidden; filter:blur(6.4px); padding-top:30px; padding-left:1%; padding-bottom:20px;">
     <img src="/logoefx.png" alt="aevndigital" style="width:100%; height:auto;">
 </a>
-        <div class="nav" role="navigation" aria-label="Site">
-            <a class="soundcloud" style="color:#FF00FF;" href="https://www.soundcloud.com/aevndigital">GOTOMYSOUNDCLOUD!!!</a>
+        <div class="nav" role="navigation" aria-label="Site" style="overflow: hidden; max-width: 100%;">
+            <a class="soundcloud" style="color:#FF00FF; display:block; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; max-width:100%;" href="https://www.soundcloud.com/aevndigital">GOTOMYSOUNDCLOUD!!!</a>
             <a class="fade" href="gallery">gallery</a>
             <a class="fade" href="contact">contact</a>
             <a class="fade" href="end">about</a>
         </div>
     </div>
 </body>
-
-</html>
