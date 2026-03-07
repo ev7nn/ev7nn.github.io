@@ -121,6 +121,14 @@
     {"title":"39. アイキャッチ3 -","src":"Bloom Into You OST/[Pretzel Leberecht] 39. アイキャッチ3 - [Bloom Into You OST].mp3"}
   ]},
   {"name":"My Merry May OST","image":"My Merry May OST/images.jpg","tracks":[
+    {"title":"02. Spring colors","src":"My Merry May OST/[arukarain] 02. Spring colors.mp3"},
+    {"title":"03. Spring colors -living mix-","src":"My Merry May OST/[arukarain] 03. Spring colors -living mix-.mp3"},
+    {"title":"04. Spring colors -school mix-","src":"My Merry May OST/[arukarain] 04. Spring colors -school mix-.mp3"},
+    {"title":"05. Spring colors -street mix-","src":"My Merry May OST/[arukarain] 05. Spring colors -street mix-.mp3"},
+    {"title":"06. REU","src":"My Merry May OST/[arukarain] 06. REU.mp3"},
+    {"title":"07. Lease","src":"My Merry May OST/[arukarain] 07. Lease.mp3"},
+    {"title":"08. HITOE","src":"My Merry May OST/[arukarain] 08. HITOE.mp3"},
+    {"title":"09. MOTOMI","src":"My Merry May OST/[arukarain] 09. MOTOMI.mp3"},
     {"title":"10. TAE","src":"My Merry May OST/[arukarain] 10. TAE.mp3"},
     {"title":"11. MISAO","src":"My Merry May OST/[arukarain] 11. MISAO.mp3"},
     {"title":"12. Monochrome","src":"My Merry May OST/[arukarain] 12. Monochrome.mp3"},
@@ -131,19 +139,11 @@
     {"title":"17. Blue","src":"My Merry May OST/[arukarain] 17. Blue.mp3"},
     {"title":"18. Darkblue","src":"My Merry May OST/[arukarain] 18. Darkblue.mp3"},
     {"title":"19. Violet","src":"My Merry May OST/[arukarain] 19. Violet.mp3"},
-    {"title":"2. Spring colors","src":"My Merry May OST/[arukarain] 2. Spring colors.mp3"},
     {"title":"20. Red","src":"My Merry May OST/[arukarain] 20. Red.mp3"},
     {"title":"21. Yellow","src":"My Merry May OST/[arukarain] 21. Yellow.mp3"},
     {"title":"22. Lightgreen","src":"My Merry May OST/[arukarain] 22. Lightgreen.mp3"},
     {"title":"23. Rainbow","src":"My Merry May OST/[arukarain] 23. Rainbow.mp3"},
-    {"title":"24. Lost colors","src":"My Merry May OST/[arukarain] 24. Lost colors.mp3"},
-    {"title":"3. Spring colors -living mix-","src":"My Merry May OST/[arukarain] 3. Spring colors -living mix-.mp3"},
-    {"title":"4. Spring colors -school mix-","src":"My Merry May OST/[arukarain] 4. Spring colors -school mix-.mp3"},
-    {"title":"5. Spring colors -street mix-","src":"My Merry May OST/[arukarain] 5. Spring colors -street mix-.mp3"},
-    {"title":"6. REU","src":"My Merry May OST/[arukarain] 6. REU.mp3"},
-    {"title":"7. Lease","src":"My Merry May OST/[arukarain] 7. Lease.mp3"},
-    {"title":"8. HITOE","src":"My Merry May OST/[arukarain] 8. HITOE.mp3"},
-    {"title":"9. MOTOMI","src":"My Merry May OST/[arukarain] 9. MOTOMI.mp3"}
+    {"title":"24. Lost colors","src":"My Merry May OST/[arukarain] 24. Lost colors.mp3"}
   ]},
   {"name":"Touhou 6 EOSD OST","image":"Touhou 6 EOSD OST/cover.jpg","tracks":[
     {"title":"1. A Dream that is more Scarlet than Red","src":"Touhou 6 EOSD OST/1. A Dream that is more Scarlet than Red.mp3"},
